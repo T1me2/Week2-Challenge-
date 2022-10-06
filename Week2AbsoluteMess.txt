@@ -1,0 +1,168 @@
+My final code is a mess because my first crack at this challenge used the multiple for loops.
+I found out it is very ineffiecent... see below LOL it worked for the alphabetical sheet but
+not the multiple years one too bc of how it was set up. Wanted to share the mess it was.
+
+Sub Practice()
+
+Dim ws As Worksheet
+'Loop through all worksheets
+    For Each ws In Worksheets
+        ws.Activate
+    
+    Dim lRow As Long
+    Dim lCol As Long
+    
+    
+        'For loop to find each individual ticker and print it in column i
+        'Define Ticker, Volume, VolTotal
+        'Define Result index to track where recording
+        
+        Dim ResultIndex As Integer
+        Dim Ticker As String
+        Dim Vol As LongLong
+        Dim VolTotal As LongLong
+        Dim VolIndex As Integer
+        Dim OpenD8 As Double
+        Dim CloseD8 As Double
+        Dim OpenPrice As Double
+        Dim ClosePrice As Double
+        Dim Delta As Double
+        Dim DeltaIndex As Integer
+        Dim PercentDelta As Variant
+        Dim PercentRange As Range
+        Dim ColumnM As Range
+       
+        
+        Set ColumnM = ws.Columns("M")
+        
+    
+        ' Define ws as active worksheet
+        'Set ws = ActiveSheet
+        
+        'Define Result Index
+        ResultIndex = 2
+        'Define VolIndex
+        VolIndex = 2
+        'Define DeltaIndex
+        DeltaIndex = 2
+        
+        'find the last row
+        lRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+        
+        'get individual tickers listed
+        For i = 2 To lRow
+        'Define Ticker
+        Ticker = ws.Cells(i, "A").Value
+        
+            If Ticker <> ws.Cells(i - 1, "A").Value Then
+            ws.Cells(ResultIndex, "J").Value = ws.Cells(i, "A").Value
+            ResultIndex = ResultIndex + 1
+            End If
+            
+        Next i
+        
+        VolTotal = ws.Cells(VolIndex, "K").Value
+                
+        'get total volume for each ticker
+        For j = 2 To lRow
+                'Define Vol
+                Vol = ws.Cells(j, "G").Value
+                
+                If ws.Cells(VolIndex, "J").Value = ws.Cells(j, "A").Value Then
+                VolTotal = Vol + VolTotal
+                ws.Cells(VolIndex, "K").Value = VolTotal
+                
+                
+                ElseIf ws.Cells(VolIndex, "J").Value <> ws.Cells(j, "A").Value Then
+                VolIndex = VolIndex + 1
+
+               'Reset Total Vol
+                VolTotal = ws.Cells(VolIndex, "K").Value
+                VolTotal = Vol + VolTotal
+                End If
+                      
+                
+        Next j
+        
+        'Define OpenD8
+        OpenD18 = 20180102
+        CloseD18 = 20181231
+        OpenD19 = 20190102
+        CloseD19 = 20191231
+        OpenD20 = 20200102
+        CloseD20 = 20201231
+        
+        'get change over the year for each ticker and the percent change per ticker
+        For h = 2 To lRow
+            
+          Delta = ws.Cells(DeltaIndex, "L").Value
+          
+            If ws.Cells(DeltaIndex, "J").Value = ws.Cells(h, "A").Value And ws.Cells(h, "B").Value = OpenD18 Then
+            OpenPrice18 = ws.Cells(DeltaIndex, "C").Value
+            
+            ElseIf ws.Cells(DeltaIndex, "J").Value = ws.Cells(h, "A").Value And ws.Cells(h, "B").Value = CloseD818 Then
+            ClosePrice18 = ws.Cells(h, "F").Value
+            
+            Delta = ClosePrice18 - OpenPrice18
+            ws.Cells(DeltaIndex, "L").Value = Delta
+            PercentDelta = ((ClosePrice18 - OpenPrice18) / OpenPrice18)
+            ws.Cells(DeltaIndex, "M").Value = PercentDelta
+            ColumnM.NumberFormat = "0.00%"
+            DeltaIndex = DeltaIndex + 1
+            
+            ElseIf ws.Cells(DeltaIndex, "J").Value = ws.Cells(h, "A").Value And ws.Cells(h, "B").Value = OpenD19 Then
+            OpenPrice19 = ws.Cells(DeltaIndex, "C").Value
+            
+            ElseIf ws.Cells(DeltaIndex, "J").Value = ws.Cells(h, "A").Value And ws.Cells(h, "B").Value = CloseD819 Then
+            ClosePrice19 = ws.Cells(h, "F").Value
+            
+            Delta = ClosePrice19 - OpenPrice19
+            ws.Cells(DeltaIndex, "L").Value = Delta
+            PercentDelta = ((ClosePrice19 - OpenPrice19) / OpenPrice19)
+            ws.Cells(DeltaIndex, "M").Value = PercentDelta
+            ColumnM.NumberFormat = "0.00%"
+            DeltaIndex = DeltaIndex + 1
+            
+            ElseIf ws.Cells(DeltaIndex, "J").Value = ws.Cells(h, "A").Value And ws.Cells(h, "B").Value = OpenD20 Then
+            OpenPrice20 = ws.Cells(DeltaIndex, "C").Value
+            
+            ElseIf ws.Cells(DeltaIndex, "J").Value = ws.Cells(h, "A").Value And ws.Cells(h, "B").Value = CloseD820 Then
+            ClosePrice20 = ws.Cells(h, "F").Value
+            
+            Delta = ClosePrice20 - OpenPrice20
+            ws.Cells(DeltaIndex, "L").Value = Delta
+            PercentDelta = ((ClosePrice20 - OpenPrice20) / OpenPrice20)
+            ws.Cells(DeltaIndex, "M").Value = PercentDelta
+            ColumnM.NumberFormat = "0.00%"
+            DeltaIndex = DeltaIndex + 1
+            
+            End If
+            
+        
+        
+        Next h
+        
+   'Headers format
+   ws.Cells(1, "J").Value = "Ticker"
+   ws.Cells(1, "K").Value = "Total Volume"
+   ws.Cells(1, "L").Value = "Year Change"
+   ws.Cells(1, "M").Value = "Percent Change"
+   
+   'Conditional format
+    For g = 2 To lRow
+    
+        If ws.Cells(g, "L").Value > 0 Then
+        ws.Cells(g, "L").Interior.ColorIndex = 4
+        
+        Else: ws.Cells(g, "L").Interior.ColorIndex = 9
+        
+        'ws.Cells(92, lRow).Interior.ColorIndex = 0
+        
+   
+        End If
+        
+     Next g
+     
+   Next ws
+    
+End Sub
